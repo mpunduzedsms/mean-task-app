@@ -1,0 +1,40 @@
+.container {
+    max-width: 500px;
+    margin: auto;
+    font-family: Arial, Sans-serif;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input {
+    flex: 1;
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #1976d2;
+    color: white;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.actions button {
+    margin-left: 5px;
+}

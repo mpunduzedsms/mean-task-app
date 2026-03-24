@@ -1,0 +1,17 @@
+<h2>Add Task</h2>
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Title:</label>
+        <input type="text" formControlName="title">
+        <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+            Title is required.
+        </div>
+    </div>
+
+    <div>
+        <label>Description:</label>
+        <textarea formControlName="description"></textarea>
+    </div>
+
+    <button type="submit" [disabled]="taskForm.invalid">Add Task</button>
+</form>
