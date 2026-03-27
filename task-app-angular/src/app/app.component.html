@@ -1,7 +1,10 @@
-<h1>📝 Task Manager</h1>
-<nav>
-    <a routerLink="/tasks">Task List</a> |
-    <a routerLink="/tasks/create">Add Task</a>
-</nav>
+<div class="min-h-screen bg-gray-100 flex justify-center items-start pt-10">
+  <div class="w-full max-w -md">
+    <h1 class="text-2x1 font-bold text-center mb-6">Task Manager</h1>
 
-<router-outlet></router-outlet>
+    <app-add-task></app-add-task>
+   <!-- <app-tasks></app-tasks> --> 
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

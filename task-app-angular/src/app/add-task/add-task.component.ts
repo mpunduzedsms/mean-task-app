@@ -24,7 +24,9 @@ export class AddTaskComponent implements OnInit {
       const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
       tasks.push(this.taskForm.value);
       localStorage.setItem('tasks', JSON.stringify(tasks));
+      console.log('Saved tasks:', tasks);
       this.taskForm.reset();
+      
       this.router.navigate(['/tasks']);
     }
   }
