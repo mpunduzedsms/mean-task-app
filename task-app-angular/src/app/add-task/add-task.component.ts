@@ -17,17 +17,43 @@ export class AddTaskComponent implements OnInit {
       title: ['', Validators.required],
       description: ['']
     });
+
+    const editIndex = localStorage.getItem('editTaskIndex');
+
+    if (editIndex !== null) {
+      const tasks: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+      const index = Number(editIndex);
+      const task = tasks[index];
+
+      if (task) {
+        this.taskForm.patchValue({
+          title: task.title,
+          description: task.description
+        });
+      }
+    }
   }
 
   onSubmit() {
+
     if (this.taskForm.valid) {
-      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+      const tasks: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');
+      const editIndex = localStorage.getItem('editTaskIndex');
+      if (editIndex !== null) {
+      //Edit Mode
+      tasks[Number(editIndex)] = this.taskForm.value;
+      localStorage.removeItem('editTaskIndex');
+    } else {
+      // Add Mode
       tasks.push(this.taskForm.value);
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      console.log('Saved tasks:', tasks);
-      this.taskForm.reset();
-      
-      this.router.navigate(['/tasks']);
     }
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    console.log('Saved Tasks:', tasks);
+
+    this.taskForm.reset();
+    this.router.navigate(['/tasks']);
   }
+}
 }

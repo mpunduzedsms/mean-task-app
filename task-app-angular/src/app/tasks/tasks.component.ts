@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../services/task.service';
+import { Router } from '@angular/router';
 
 interface Task {
   title: string;
@@ -16,7 +17,8 @@ export class TasksComponent implements OnInit {
 
   tasks: any[] = [];
 
-  constructor(private taskService: TaskService) {}
+  constructor(private router: Router) {}
+
 
   ngOnInit() {
     const savedTasks = localStorage.getItem('tasks');
@@ -29,8 +31,19 @@ export class TasksComponent implements OnInit {
 
   // Delete Task
   deleteTask(index: number) {
-      this.tasks.splice(index, 1);
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-  }
+      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
+      tasks.splice(index, 1) //remove task
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+
+      this.tasks = tasks; // Refresh UI
+
+}
+
+  // Edit Task
+  editTask(index: number) {
+
+    localStorage.setItem('editTaskIndex', index.toString());
+    this.router.navigate(['/add-task']);
+  }
 }

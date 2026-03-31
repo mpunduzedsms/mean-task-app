@@ -20,7 +20,7 @@ import { AddTaskComponent } from './add-task/add-task.component';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule 
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
