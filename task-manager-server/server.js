@@ -1,79 +1,109 @@
-// Server.js
+// servre.js
 const express =  require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const Task = require('./models/Task');
+
+
 const app = express();
 
+// Middleware
+app.use(cors()); // Allow Angular to connect
 app.use(express.json()); // middle to parse JSON
 
-// --- In-Memory Storage ---
-let tasks = [];
-let id = 1;
+
+
+
+mongoose.connect("mongodb+srv://admin:saveit!@cluster0.ksh7ugu.mongodb.net/taskdb")
+.then(() => console.log("MongoDB Connected Successfully!"))
+.catch(err => console.log("Error:", err));
+
 
 // --- CRUD Routes ---
 
 // GET all tasks
-app.get('/tasks', (req, res) => {
-    console.log("Returning all tasks:", tasks); // Debug
-    res.json(tasks); // Return tasks array as JSON
-});
-
-// GET a single task by ID
-app.get('/tasks/:id', (req, res) => {
-    console.log("Returning tasks:", tasks); // this is also just for debbuging
-    const taskId = parseInt(req.params.id);
-
-    const task = tasks.find(t => t.id === taskId);
-
-    if (task) {
-        res.json(task);
-    } else {
-        res.status(404).json({ error: 'Task not found'});
+app.get('/tasks',  async (req, res, next) => {
+    try {
+        const tasks = await Task.find();
+        res.status(200).json(tasks);
+    } catch (err) {
+        next(err);
     }
 });
 
-// POST Create a new task
-app.post('/tasks', (req, res) => {
-    const { title, description } = req.body;
-
-    if (!title || !description) {
-        return res.status(400).json({ error: 'Title and description are required'});
-    }
-
-    const task = { id: id++, title, description };
-    tasks.push(task);
-
-    console.log("Created Task:", task); // Debug
-    res.status(201).json(task);
+// GET single task
+app.get('/tasks/:id', async (req, res, next) => {
+   try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    res.status(200).json(task);
+   } catch (err) {
+    res.status(400).json({ error: 'Invalid Task ID' });
+   }
 });
 
-// PUT update a task by ID
-app.put('/tasks/:id', (req, res) => {
-    const taskId = parseInt(req.params.id);
-    const index = tasks.findIndex(t => t.id === taskId);
 
-    if (index === -1) {
-        return res.status(404).json({ error: 'Task not found' });
+// POST create task
+app.post('/tasks', async(req, res, next) => {
+    console.log("BODY:", req.body);
+    try {
+        const { title, description } = req.body;
+        if (!title || !description) {
+            return res.status(400).json({ error: 'Title and description are required' });
+        }
+
+        const newTask = await Task.create({ title, description });
+        res.status(201).json(newTask);
+    } catch (err) {
+        next(err);
     }
-
-    tasks[index] = { id: taskId, title, description };
-    console.log("Updateed task:", tasks[index]); // Debug
 });
 
-// DELETE a task
-app.delete('/tasks/:id', (req, res) => {
-    const taskId = parseInt(req.params.id);
-    const exists = tasks.some(t => t.id === taskId);
+// PUT update task
+app.put('/tasks/:id', async (req, res, next) => {
+    try {
+        const { title, description} = req.body;
+        if (!title || !description) {
+            return res.status(400).json({ error: 'Title and description are required' });
+        }
 
-    if(!exists) {
-        return res.status(404).json({ error: 'Task not found' });
+        const updatedTask = await Task.findByIdAndUpdate(
+            req.params.id,
+            { title, description },
+            { new: true } // return updated document
+        );
+
+        if (!updatedTask) return res.status(404).json({ error:'Task not found' });
+        res.status(200).json(updatedTask);
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid Task ID' });
     }
-
-    tasks = tasks.filter(t => t.id !== taskId);
-    console.log('Deleted task ID ${taskId}'); // Debug
 });
 
+// DELETE task
+app.delete('/tasks/:id', async (req, res, next) => {
+    try {
+        const deletedTask = await Task.findByIdAndDelete(req.params.id);
+        if (!deletedTask) return res.status(404).json({ error: 'Task not found' });
+        res.status(204).send();
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid Task ID' });
+    }
+});
+
+// GLOBAL ERROR HANDLER
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        error: 'Something went wrong on the server'
+    });
+});
 
 // --- Starting the Server
 const PORT = 3000;
 app.listen(PORT, () =>  {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+//mongodb+srv://admin:saveit!@cluster0.ksh7ugu.mongodb.net/
