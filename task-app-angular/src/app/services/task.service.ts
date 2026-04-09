@@ -9,19 +9,24 @@ export class TaskService {
   private apiUrl = 'http://localhost:3000/tasks'; // placeholder
 
   constructor(private http: HttpClient) {}
-  private tasks: any[] = [];
 
-  getTasks() {
-    this.tasks;
+
+  getTasks(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
+  getTaskById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
 
-  addTask(task: any): Observable<any>{
-    this.tasks.push(task);
+  addTask(task: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, task);
   }
 
-  saveTasks(tasks: any[]) {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+  updateTask(id: string, task: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`, task);
+  }
+
+  deleteTask(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../services/task.service';
 import { Router } from '@angular/router';
 
-interface Task {
+/*interface Task {
   title: string;
   description: string;
-}
+}*/
 
 @Component({
   selector: 'app-tasks',
@@ -17,33 +17,47 @@ export class TasksComponent implements OnInit {
 
   tasks: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private taskService: TaskService) {}
 
+  ngOnInit(): void {
+    this.loadTasks();
+  }
 
-  ngOnInit() {
-    const savedTasks = localStorage.getItem('tasks');
-    this.tasks = savedTasks ? JSON.parse(savedTasks) : [];
-
-    console.log('Tasks loaded:', this.tasks);
+  loadTasks() {
+    this.taskService.getTasks().subscribe({
+      next: (data) => {
+        this.tasks = data;
+        console.log('Task from API:', data);
+      },
+      error: (err) => console.error('Error fetching tasks:', err)
+    });
   }
 
 
 
   // Delete Task
-  deleteTask(index: number) {
-      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+  deleteTask(id: string): void {
+    console.log("Deleting ID:", id); // for Debugging
+      if (confirm('Are you sure you want to delete this task?')) {
+        this.taskService.deleteTask(id).subscribe({
+        next: () => {
+          console.log("Deleted Successfuly");
+          this.loadTasks(); // Refresh tasks after deletion
+        },
+        error: (err) => console.error('Error deleting task:', err)
+      });
 
-      tasks.splice(index, 1) //remove task
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-
-      this.tasks = tasks; // Refresh UI
-
+      }
 }
 
   // Edit Task
-  editTask(index: number) {
+  editTask(id: string): void{
+    localStorage.setItem('editTaskId', id);
+    this.router.navigate(['/add-task']);
+  }
 
-    localStorage.setItem('editTaskIndex', index.toString());
+  addNewTask(): void {
+    localStorage.removeItem('editTaskId');
     this.router.navigate(['/add-task']);
   }
 }

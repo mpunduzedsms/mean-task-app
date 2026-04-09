@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TaskService } from '../services/task.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,53 +7,52 @@ import { Router } from '@angular/router';
   templateUrl: './add-task.component.html',
   styleUrls: ['./add-task.component.scss']
 })
-export class AddTaskComponent implements OnInit {
-  taskForm!: FormGroup;
+export class AddTaskComponent implements OnInit{
+  task = {
+    title: '',
+    description: ''
+  };
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  editTaskId: string | null = null;
+
+  constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit(): void {
-    this.taskForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['']
-    });
+    this.editTaskId = localStorage.getItem('editTaskId');
 
-    const editIndex = localStorage.getItem('editTaskIndex');
-
-    if (editIndex !== null) {
-      const tasks: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-      const index = Number(editIndex);
-      const task = tasks[index];
-
-      if (task) {
-        this.taskForm.patchValue({
-          title: task.title,
-          description: task.description
-        });
-      }
+    if (this.editTaskId) {
+      this.taskService.getTaskById(this.editTaskId).subscribe({
+        next: (data) => {
+          this.task = data;
+        },
+        error: (err) => console.error(err)
+      });
     }
   }
 
-  onSubmit() {
+  saveTask(): void{
+    console.log("Saving Task")
 
-    if (this.taskForm.valid) {
-
-      const tasks: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');
-      const editIndex = localStorage.getItem('editTaskIndex');
-      if (editIndex !== null) {
-      //Edit Mode
-      tasks[Number(editIndex)] = this.taskForm.value;
-      localStorage.removeItem('editTaskIndex');
+    if (this.editTaskId) {
+      // UPDATE existing task
+      this.taskService.updateTask(this.editTaskId, this.task).subscribe({
+        next: () => {
+          localStorage.removeItem('editTaskId');
+          this.router.navigate(['/tasks']);
+        },
+        error: (err) => console.error('Error updating task:', err)
+      });
     } else {
-      // Add Mode
-      tasks.push(this.taskForm.value);
+      // CREATE new task
+      this.taskService.addTask(this.task).subscribe({
+        next: () => {
+          this.task = { title: '', description: '' };
+
+          this.router.navigate(['/tasks']);
+          console.log("Navigating...");
+        },
+        error: (err) => console.error('Error adding task:', err)
+      });
     }
-
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    console.log('Saved Tasks:', tasks);
-
-    this.taskForm.reset();
-    this.router.navigate(['/tasks']);
   }
-}
 }

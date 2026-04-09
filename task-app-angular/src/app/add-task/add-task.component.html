@@ -1,28 +1,26 @@
 <div class="container mt-4">
-    <h2 class="mb-4"> Add Task</h2>
+    <h2 class="mb-4">{{ editTaskId ? 'Edit Task' : 'Add Task' }}</h2>
 
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <form (ngSubmit)="saveTask()" class="space-y-4">
 
     <!-- Title -->
-     <div>
+     <div class="mb-3">
         <label class="form-label">Title:</label>
         <input 
             type="text"
-            formControlName="title"
+            [(ngModel)]="task.title"
+            name="title"
             class="form-control"
             placeholder="Enter task title"
+            required
             />
-            <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched"
-            class="text-danger mt-1">
-                Title is required
-            </div>
      </div>
 
      <!-- Description -->
-      <div>
-        <label class="mb-3">Description</label>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
         <textarea 
-            formControlName="description"
+            [(ngModel)] = "task.description" name="description"
             class="form-control"
             placeholder="Enter task description"
         ></textarea>
@@ -31,10 +29,12 @@
       <!-- Submit Button -->
        <button
        type="submit"
-       [disabled]="taskForm.invalid"
        class="btn btn-primary" 
-       >
-        Add Task
+       > 
+       {{ editTaskId ? 'Update Task' : 'Add Task' }}
+       </button>
+       <button type="button" class="btn btn-secondary ms-2" routerLink="/tasks">
+        Cancel
        </button>
     </form>
 </div> 

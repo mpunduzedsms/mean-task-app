@@ -4,13 +4,13 @@ import { TasksComponent } from './tasks/tasks.component';
 import { AddTaskComponent } from './add-task/add-task.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/tasks', pathMatch: 'full' },
-  { path: 'tasks', component: TasksComponent },
-  { path: 'tasks/create', component: AddTaskComponent }
+  { path: '', component: TasksComponent },
+  { path: 'add-task', component: AddTaskComponent },
+  { path: '**', redirectTo: '' } // Catch-all redirect
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
