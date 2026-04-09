@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../services/task.service';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-task',
@@ -8,50 +9,68 @@ import { Router } from '@angular/router';
   styleUrls: ['./add-task.component.scss']
 })
 export class AddTaskComponent implements OnInit{
-  task = {
-    title: '',
-    description: ''
-  };
-
+  taskForm!: FormGroup;
   editTaskId: string | null = null;
 
-  constructor(private taskService: TaskService, private router: Router) {}
+  constructor(
+    private TaskService: TaskService,
+    private router: Router,
+    private  fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
+    // Create Form
+    this.taskForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', [Validators.required, Validators.minLength(5)]]
+    });
+
     this.editTaskId = localStorage.getItem('editTaskId');
 
+    //Load Data if Editing
     if (this.editTaskId) {
-      this.taskService.getTaskById(this.editTaskId).subscribe({
+      this.TaskService.getTaskById(this.editTaskId).subscribe({
         next: (data) => {
-          this.task = data;
+          this.taskForm.patchValue({
+            title: data.title,
+            description: data.description
+          });
         },
         error: (err) => console.error(err)
       });
     }
+
   }
 
-  saveTask(): void{
-    console.log("Saving Task")
+  saveTask(): void {
+    console.log("Saving Task");
+
+    // VALIDATION
+    if (this.taskForm.invalid) {
+      this.taskForm.markAllAsTouched();
+      return;
+    }
+
+    const taskData = this.taskForm.value;
 
     if (this.editTaskId) {
-      // UPDATE existing task
-      this.taskService.updateTask(this.editTaskId, this.task).subscribe({
+      // UPDATE
+      this.TaskService.updateTask(this.editTaskId, taskData).subscribe({
         next: () => {
           localStorage.removeItem('editTaskId');
           this.router.navigate(['/tasks']);
         },
-        error: (err) => console.error('Error updating task:', err)
+        error: (err) => console.log('Error updating task:', err)
       });
     } else {
-      // CREATE new task
-      this.taskService.addTask(this.task).subscribe({
+      // CREATE
+      this.TaskService.addTask(taskData).subscribe({
         next: () => {
-          this.task = { title: '', description: '' };
-
+          this.taskForm.reset(); // reset form
           this.router.navigate(['/tasks']);
-          console.log("Navigating...");
+          console.log("Navigating....");
         },
-        error: (err) => console.error('Error adding task:', err)
+        error: (err) => console.log('Error adding task:', err)
       });
     }
   }

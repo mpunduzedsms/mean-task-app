@@ -1,47 +1,6 @@
-<!--<div class="card p-4 shadow-sm">
-
-    <h2 class="mb-4">Task List</h2>
-
-    //  empty State 
-     <div *ngIf="tasks.length === 0" class="text-muted text-center py-3">
-        No tasks yet. Add one above 👆
-     </div>
-
-     Task Item 
-      <ul *ngIf="tasks.length > 0" class="list-group">
-        <li *ngFor="let task of tasks"
-            class="list-group-item d-flex justify-content-between align-item-center">
-
-            <div>
-                <strong class="d-block">{{ task.title }}</strong>
-                <span class="text-muted">{{ task.description }}</span>
-            </div>
-
-          <div *ngFor="let task of tasks" class="card mb-3 p-3">
-            <h3>{{ task.title }}</h3>
-            <p>{{ task.description }}</p>
-            Edit Button 
-            <button class="btn btn-sm btn-warning me-2" (click)="editTask(task._id)">
-              <i ></i>
-            </button>
-
-           Delete Button 
-             <button class="btn btn-sm btn-danger" (click)="deleteTask(task._id)">
-              Delete
-             </button>
-
-          </div>
-        </li>
-      </ul>
-</div> -->
-
 <div class="container mt-4">
   <h2 class="mb-4">Task List</h2>
-
-  <button class="btn btn-primary mb-3" (click)="addNewTask()">
-    + Add task
-  </button>
-
+  
   <div *ngFor="let task of tasks" class="card mb-3 shadow-sm p-3">
 
     <!-- Header Row -->
@@ -59,7 +18,7 @@
 
           <button class="btn btn-sm btn-outline-danger"
                   (click)="deleteTask(task._id)">
-
+               <i class="bi bi-trash"></i>
           </button>
         </div>
 

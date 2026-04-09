@@ -1,29 +1,40 @@
 <div class="container mt-4">
     <h2 class="mb-4">{{ editTaskId ? 'Edit Task' : 'Add Task' }}</h2>
 
-    <form (ngSubmit)="saveTask()" class="space-y-4">
+    <form [formGroup]="taskForm" (ngSubmit)="saveTask()" class="space-y-4">
 
     <!-- Title -->
      <div class="mb-3">
         <label class="form-label">Title:</label>
         <input 
             type="text"
-            [(ngModel)]="task.title"
-            name="title"
+            formControlName="title"
             class="form-control"
             placeholder="Enter task title"
             required
             />
+
+            <!-- Validation -->
+             <div class="text-danger"
+                    *ngIf="taskForm.get('title')?.touched && taskForm.get('title')?.invalid">
+                    Title is required
+             </div>
      </div>
 
      <!-- Description -->
       <div class="mb-3">
         <label class="form-label">Description</label>
         <textarea 
-            [(ngModel)] = "task.description" name="description"
+            formControlName="description"
             class="form-control"
             placeholder="Enter task description"
         ></textarea>
+
+        <!-- Validation -->
+         <div class="text-danger"
+                *ngIf="taskForm.get('description')?.touched && taskForm.get('description')?.invalid">
+            Description must be at least 5 characters
+         </div>
       </div>
 
       <!-- Submit Button -->

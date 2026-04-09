@@ -2,10 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../services/task.service';
 import { Router } from '@angular/router';
 
-/*interface Task {
-  title: string;
-  description: string;
-}*/
 
 @Component({
   selector: 'app-tasks',
@@ -26,6 +22,8 @@ export class TasksComponent implements OnInit {
   loadTasks() {
     this.taskService.getTasks().subscribe({
       next: (data) => {
+        this.loadTasks();
+        this.router.navigate(['/tasks']);
         this.tasks = data;
         console.log('Task from API:', data);
       },
