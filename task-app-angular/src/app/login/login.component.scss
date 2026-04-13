@@ -1,0 +1,22 @@
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('/assets/login-bg.jpg') no-repeat center center/cover;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 350px;
+    padding: 30px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.login-card:hover {
+    transform: translateY(-3px);
+    transition: 0.3s ease;
+}

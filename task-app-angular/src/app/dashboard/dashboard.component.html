@@ -1,0 +1,66 @@
+<div class="container mt-4">
+   <!-- <h4>Welcome back, {{ username }} 👋</h4> --> 
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row">
+
+    <!-- Total Tasks -->
+     <div class="col-md-4 mb-3">
+        <div class="card text-white bg-primary shadow">
+            <div class="card-body">
+                <h5>Total Tasks</h5>
+                <h2>{{ totalTasks }}</h2>
+            </div>
+        </div>
+     </div>
+
+     <!-- Completed -->
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success shadow">
+            <div class="card-body">
+                <h5>Completed</h5>
+                <h2>{{ completedTasks }}</h2>
+            </div>
+
+        </div>
+
+      </div>
+
+      <!-- Pending Tasks -->
+       <div class="col-md-4 mb-3">
+        <div class="card text-white bg-warning shadow">
+            <div class="card-body">
+                <h5>Pending</h5>
+                <h2>{{ pendingTasks }}</h2>
+            </div>
+        </div>
+       </div>
+
+       <button class=" btn btn-primary me-2" routerLink="/add-task">
+        ➕ Add Task
+       </button>
+
+       <button class="btn btn-secondary" routerLink="/tasks">
+        📋 View Tasks
+       </button>
+       <h5 class="mt-4"> Recent Tasks</h5>
+       <ul class="list-group">
+        <li class="list-group-item" *ngFor="let task of tasks.slice(0,5)">
+            {{task.title}}
+        </li>
+       </ul>
+
+       <div class="mt-4">
+        <h6>Task Completion</h6>
+
+        <div class="progress">
+            <div
+                class="progress-bar bg-success"
+                [style.width.%]="(completedTasks / totalTasks) * 100"
+            >
+
+            </div>
+        </div>
+       </div>
+</div>
+</div>

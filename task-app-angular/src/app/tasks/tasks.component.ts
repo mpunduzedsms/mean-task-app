@@ -3,6 +3,7 @@ import { TaskService } from '../services/task.service';
 import { Router } from '@angular/router';
 
 
+
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -12,6 +13,9 @@ import { Router } from '@angular/router';
 export class TasksComponent implements OnInit {
 
   tasks: any[] = [];
+  allTasks: any[] = [];
+  searchText: string = '';
+
 
   constructor(private router: Router, private taskService: TaskService) {}
 
@@ -19,16 +23,28 @@ export class TasksComponent implements OnInit {
     this.loadTasks();
   }
 
+  testNav() {
+    console.log('BUTTON CLICKED')
+    this.router.navigate(['/add-task']);
+  }
+
   loadTasks() {
     this.taskService.getTasks().subscribe({
       next: (data) => {
-        this.loadTasks();
-        this.router.navigate(['/tasks']);
         this.tasks = data;
+        this.allTasks = [...data]; // Store full list
         console.log('Task from API:', data);
       },
       error: (err) => console.error('Error fetching tasks:', err)
     });
+  }
+
+  filterTasks() {
+    const text = this.searchText.toLowerCase();
+    this.tasks = this.allTasks.filter(task =>
+      task.title.toLowerCase().includes(text) ||
+      task.description.toLowerCase().includes(text)
+    );
   }
 
 
@@ -58,4 +74,6 @@ export class TasksComponent implements OnInit {
     localStorage.removeItem('editTaskId');
     this.router.navigate(['/add-task']);
   }
+
+  
 }

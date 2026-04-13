@@ -1,4 +1,12 @@
 <div class="container mt-4">
+  <input 
+    type="text"
+    class="form-control mb-3"
+    placeholder="Search tasks..."
+    [(ngModel)]="searchText"
+    (input)="filterTasks()" 
+  />
+
   <h2 class="mb-4">Task List</h2>
   
   <div *ngFor="let task of tasks" class="card mb-3 shadow-sm p-3">
@@ -8,6 +16,7 @@
 
       <!-- Left: Title -->
        <h5 class="mb-0">{{ task.title }}</h5>
+      
 
        <!-- Right: Icons -->
         <div>

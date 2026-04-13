@@ -35,3 +35,8 @@ button {
 button:hover {
     background-color: #1565c0;
 }
+
+.nav-link.active {
+    background: #495057;
+    border-radius: 5px;
+}

@@ -1,0 +1,45 @@
+<div class="login-container d-flex justify-content-center align-items-center">
+
+    <div class="card shadow login-card">
+
+        <h3 class="text-center mb-4">welcome Back</h3>
+        <p class="text-center text-muted mb-4">Login to your Task Manager App</p>
+
+        <form (ngSubmit)="login()">
+            <!-- Usernme -->
+             <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input 
+                type="text"
+                class="form-control"
+                [(ngModel)]="username"
+                name="username"
+                placeholder="Enter username"
+                required
+                >
+             </div>
+
+             <!-- Password -->
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input 
+                type="password"
+                name="password"
+                class="form-control"
+                placeholder="enter password"
+                [(ngModel)]="password"
+                required
+                >
+              </div>
+
+              <!-- Button -->
+               <button type="submit" class="btn btn-primary w-100">
+                Login
+               </button>
+        </form>
+        <p class="text-center mt-3">
+            Don't have an account?
+            <a routerLink="/register">Sign up</a>
+        </p>
+    </div>
+</div>
